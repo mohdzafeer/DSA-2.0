@@ -79,11 +79,78 @@ void levelOrderTraversal(node *root)
     }
 }
 
+int minVal(node* root){
+    node* temp=root;
+    while(temp->left!=NULL){
+        temp=temp->left;
+    }
+    return temp->data;
+}
+int maxVal(node* root){
+    node* temp=root;
+    while(temp->right!=NULL){
+        temp=temp->right;
+    }
+    return temp->data;
+}
+
+node* deleteFromBST(node* root,int val){
+    // base case
+    if(root==NULL)
+        return root;
+    
+    if(root->data==val){
+        // 0 child
+        if(root->left==NULL && root->right==NULL){
+            delete root;
+            return NULL;
+        }
+
+        // 1 child
+        // left child
+        if(root->left !=NULL && root->right==NULL){
+            node*temp=root->left;
+            delete root;
+            return temp;
+        }
+        // right child
+        if(root->right !=NULL && root->left==NULL){
+            node*temp=root->right;
+            delete root;
+            return temp;
+        }
+
+
+        // 2 child
+
+        if(root->left != NULL && root->right!=NULL){
+            int mini=minVal(root->right);
+            root->data=mini;
+            root->right=deleteFromBST(root->right,mini);
+            return root;
+        }
+
+    }else if(root->data > val){
+        root->left = deleteFromBST(root->left,val);
+        return root;
+    }else{
+        root->right=deleteFromBST(root->right,val);
+        return root;
+    }
+}
+
 int main(){
     node* root=NULL;
     cout<<"ENter data to create BST"<<endl;
     takeInput(root);
     cout<<"Printing BST"<<endl;
     levelOrderTraversal(root);
+    cout<<"Miniumum val = "<<minVal(root)<<endl;
+    cout<<"Maximum val = "<<maxVal(root)<<endl;
+    
+    root=deleteFromBST(root,30);
+    cout<<"Printing BST"<<endl;
+    levelOrderTraversal(root);
+
     return 0;
 }
